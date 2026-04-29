@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx --yes create-next-app@latest . --ts --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(npm install *)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(timeout 25 npm run dev)",
+      "Bash(npm run *)",
+      "Bash(tee /tmp/marcello-build.log)",
+      "Bash(tee /tmp/marcello-build-4.log)",
+      "Bash(tee /tmp/marcello-build-5.log)"
+    ]
+  }
+}
