@@ -52,6 +52,9 @@ const pad = (n: number) => n.toString().padStart(2, "0");
 const EASE = [0.4, 0, 0.2, 1] as const;
 const EXPO_OUT = [0.16, 1, 0.3, 1] as const;
 
+// Reserve last portion of scroll as "hold zone" so the final card stays fully visible
+const HOLD_ZONE = 0.15;
+
 function ClipReveal({
   children,
   delay = 0,
@@ -62,7 +65,7 @@ function ClipReveal({
   className?: string;
 }) {
   return (
-    <div className={className} >
+    <div className={className}>
       <motion.div
         initial={{ y: "100%" }}
         whileInView={{ y: "0%" }}
@@ -77,7 +80,7 @@ function ClipReveal({
 
 export default function ServicesSection() {
   const stageRef = useRef<HTMLElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const lastIndexRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const { scrollYProgress } = useScroll({
@@ -85,14 +88,32 @@ export default function ServicesSection() {
     offset: ["start start", "end end"],
   });
 
-  const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  // Progress bar fills only across the "active" portion of scroll, then stays full during hold zone
+  const progressWidth = useTransform(
+    scrollYProgress,
+    [0, 1 - HOLD_ZONE, 1],
+    ["5%", "100%", "100%"],
+  );
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const idx = Math.min(
-      services.length - 1,
-      Math.max(0, Math.floor(latest * services.length)),
-    );
-    if (idx !== activeIndex) setActiveIndex(idx);
+    // Compress effective progress into (1 - HOLD_ZONE), reserving the tail for the last card to "hold"
+    const effectiveProgress = Math.min(latest / (1 - HOLD_ZONE), 1);
+    const rawIdx = effectiveProgress * services.length;
+
+    // Hysteresis: prevent rapid back-and-forth switching at segment boundaries
+    const currentIdx = lastIndexRef.current;
+    let newIdx = currentIdx;
+
+    if (rawIdx >= currentIdx + 1) {
+      newIdx = Math.min(services.length - 1, Math.floor(rawIdx));
+    } else if (rawIdx < currentIdx - 0.1) {
+      newIdx = Math.max(0, Math.floor(rawIdx));
+    }
+
+    if (newIdx !== currentIdx) {
+      lastIndexRef.current = newIdx;
+      setActiveIndex(newIdx);
+    }
   });
 
   const active = services[activeIndex];
@@ -114,15 +135,11 @@ export default function ServicesSection() {
 
             <div className="flex flex-col gap-6">
               <ClipReveal delay={0.05}>
-                <p className="font-geist text-lg text-[#CECBC8]">
-                  (Services)
-                </p>
+                <p className="font-geist text-lg text-[#CECBC8]">(Services)</p>
               </ClipReveal>
 
               <ClipReveal delay={0.1}>
-                <h2
-                  className="font-geist text-[56px] max-w-xl font-light leading-[1.1] tracking-tight text-[#CECBC8]"
-                >
+                <h2 className="font-geist text-[56px] max-w-xl font-light leading-[1.1] tracking-tight text-[#CECBC8]">
                   How I Help your Business Succeed
                 </h2>
               </ClipReveal>
@@ -141,9 +158,11 @@ export default function ServicesSection() {
         <section
           ref={stageRef}
           className="relative z-0 w-full bg-[#000] px-5 sm:px-8 lg:px-12 xl:px-14 2xl:px-0"
-          style={{ height: `${services.length * 150 + 120}vh` }}
+          style={{ height: `${(services.length + 4.5) * 100}vh` }}
+          
         >
           <div className="mx-auto max-w-7xl sticky top-0 z-0 h-screen w-full overflow-hidden">
+            {/* Service number */}
             <div className="pointer-events-none absolute left-auto sm:left-5 md:left-0 right-0 sm:right-auto top-6 md:top-12">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
@@ -151,7 +170,7 @@ export default function ServicesSection() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.4, ease: EASE }}
+                  transition={{ duration: 0.8, ease: EASE }}
                   className="font-geist block text-6xl sm:text-7xl font-light leading-none text-white/55"
                 >
                   {pad(active.id)}
@@ -159,22 +178,29 @@ export default function ServicesSection() {
               </AnimatePresence>
             </div>
 
-          <div className="pointer-events-none absolute left-60 sm:left-1/2 top-25 sm:top-20 w-[65vw] max-w-[780px] -translate-x-1/2">
+            {/* Progress bar */}
+            <div className="pointer-events-none absolute left-60 sm:left-1/2 top-25 sm:top-20 w-[65vw] max-w-[780px] -translate-x-1/2">
               <div className="relative h-[4px] w-full bg-white/15">
                 <motion.div
-                  style={{ 
-                    width: progressWidth, 
-                    background: 'linear-gradient(90deg, #000000 3.33%, #9C9C9C 100%)' 
+                  style={{
+                    width: progressWidth,
+                    background:
+                      "linear-gradient(90deg, #000000 3.33%, #9C9C9C 100%)",
                   }}
                   className="absolute inset-y-0 left-0 bg-white/70"
                 />
               </div>
             </div>
 
+            {/* Decorative shape */}
             <div className="pointer-events-none absolute left-0 sm:left-auto sm:right-0 top-6 sm:top-10">
               <motion.div
                 animate={{ y: [-8, 8, -8] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 className="h-[90px] w-[90px] md:h-[120px] md:w-[120px]"
               >
                 <AnimatePresence mode="wait" initial={false}>
@@ -183,7 +209,7 @@ export default function ServicesSection() {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.4, ease: EASE }}
+                    transition={{ duration: 0.8, ease: EASE }}
                     className="h-full w-full"
                   >
                     <DecorativeShape id={active.id} />
@@ -192,12 +218,12 @@ export default function ServicesSection() {
               </motion.div>
             </div>
 
-            <div className="pointer-events-none absolute left-1/2 bottom-[0] -translate-x-1/2 ">
+            {/* Video */}
+            <div className="pointer-events-none absolute left-1/2 bottom-0 -translate-x-1/2">
               <div className="relative flex items-center justify-center h-75 sm:h-[40vh] lg:h-[50vh] xl:h-[80vh]">
                 <AnimatePresence initial={false}>
                   <motion.video
                     key={`video-${active.id}`}
-                    ref={videoRef}
                     src={active.video}
                     autoPlay
                     muted
@@ -209,33 +235,35 @@ export default function ServicesSection() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.4, ease: EASE }}
-                    className="absolute left-1/2 sm:h-[45vh] sm:h-full w-auto max-w-[95vw] -translate-x-1/2 object-contain"
+                    transition={{ duration: 0.5, ease: EASE }}
+                    className="absolute left-1/2 sm:h-full w-auto max-w-[95vw] -translate-x-1/2 object-contain"
                   />
                 </AnimatePresence>
               </div>
             </div>
 
-            <div className="pointer-events-none absolute top-35 sm:top-auto bottom-unset left-[0] right-0 sm:bottom-14 max-w-md mx-auto sm:mx-0">
+            {/* Title */}
+            <div className="pointer-events-none absolute top-35 sm:top-auto bottom-unset left-0 right-0 sm:bottom-14 max-w-md mx-auto sm:mx-0">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.h3
                   key={`title-${active.id}`}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -30 }}
-                  transition={{ duration: 0.45, ease: EASE }}
+                  transition={{ duration: 0.8, ease: EASE }}
                   className="text-[36px] sm:text-[40px] xl:text-5xl leading-[1.2] tracking-tight"
                 >
-                  <span className="font-geist  block font-light sm:font-normal text-white">
+                  <span className="font-geist block font-light sm:font-normal text-white">
                     {active.titleLine1}
                   </span>
-                  <span className="font-geist  block font-light sm:font-light text-white/40">
+                  <span className="font-geist block font-light sm:font-light text-white/40">
                     {active.titleLine2}
                   </span>
                 </motion.h3>
               </AnimatePresence>
             </div>
 
+            {/* Description */}
             <div className="pointer-events-none absolute top-70 sm:top-auto bottom-unset left-0 right-0 max-w-md mx-auto sm:bottom-14 md:right-0 md:left-auto md:max-w-[250px] xl:max-w-[420px]">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.p
@@ -243,7 +271,7 @@ export default function ServicesSection() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -30 }}
-                  transition={{ duration: 0.45, ease: EASE }}
+                  transition={{ duration: 0.8, ease: EASE }}
                   className="font-satoshi text-xl leading-[1.65] text-white/65"
                 >
                   {active.desc}

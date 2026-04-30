@@ -40,7 +40,7 @@ export default function InsightCard({ post, slideWidth, onClick }: Props) {
     <div style={wrapperStyle} className={useDynamic ? "" : "w-full h-full"}>
       <Link
         href={`/insights/${post.slug}`}
-        className="block bg-[#ccc9c6] rounded-xl overflow-hidden select-none hover:-translate-y-1 hover:shadow-lg hover:shadow-black/[0.08] transition-[transform,shadow] duration-200"
+        className="block bg-transparent rounded-xl overflow-hidden select-none  transition-[transform,shadow] duration-200"
         draggable={false}
         onClick={onClick}
       >
