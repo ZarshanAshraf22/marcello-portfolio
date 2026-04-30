@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import FadeInUp from "./FadeInUp";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -12,16 +14,25 @@ const navLinks = [
   { label: "Privacy Policy", href: "/privacy" },
 ];
 
+type Status = "idle" | "loading" | "success" | "error";
+
 export default function Footer() {
   const [email, setEmail] = useState("");
-  const [thanks, setThanks] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  const [shake, setShake] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.includes("@")) return;
-    setThanks(true);
+    if (!email.includes("@") || !email.includes(".")) {
+      setShake(true);
+      setTimeout(() => setShake(false), 500);
+      return;
+    }
+    setStatus("loading");
+    await new Promise((r) => setTimeout(r, 1000));
+    setStatus("success");
     setEmail("");
-    setTimeout(() => setThanks(false), 2000);
+    setTimeout(() => setStatus("idle"), 3000);
   }
 
   return (
@@ -29,6 +40,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 items-start gap-10 md:grid-cols-2 md:gap-8">
           {/* LEFT COLUMN */}
+          <FadeInUp delay={0}>
           <div className="flex flex-col">
             <div className="flex items-center gap-4">
               <Image src="/media/footer_logo.svg" alt="Marcello Genovese" width={48} height={48} className="h-12 w-45"
@@ -41,10 +53,12 @@ export default function Footer() {
               Executive and Technology
               <br />
               Strategist
-            </p>  
+            </p>
           </div>
+          </FadeInUp>
 
           {/* RIGHT COLUMN */}
+          <FadeInUp delay={0.15}>
           <div className="flex flex-col items-start gap-10 md:items-end">
             {/* Newsletter */}
             <div className="w-full lg:w-auto">
@@ -52,44 +66,76 @@ export default function Footer() {
                 Subscribe to our Newsletter
               </p>
 
-              <form
-                onSubmit={handleSubmit}
-                className="flex w-full items-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] py-[6px] pl-5 pr-3 w-fit md:w-[300px] xl:w-[520px]"
+              <motion.div
+                animate={shake ? { x: [-8, 8, -6, 6, -4, 4, 0] } : { x: 0 }}
+                transition={{ duration: 0.4 }}
               >
-                {thanks ? (
-                  <span className="font-satoshi flex-1 text-[0.9rem] text-white/80">
-                    Thank you!
-                  </span>
-                ) : (
+                <form
+                  onSubmit={handleSubmit}
+                  className="flex w-full items-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] py-[6px] pl-5 pr-3 w-fit md:w-[300px] xl:w-[520px]"
+                >
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="example@gmail.com"
-                    className="font-satoshi flex-1 border-none bg-transparent text-[0.9rem] text-white placeholder-white/30 outline-none"
+                    disabled={status === "loading" || status === "success"}
+                    className="font-satoshi flex-1 border-none bg-transparent text-[0.9rem] text-white placeholder-white/30 outline-none disabled:opacity-60"
                   />
-                )}
 
-                <button
-                  type="submit"
-                  aria-label="Subscribe"
-                  className="flex h-9 w-9 shrink-0 items-center justify-center bg-transparent text-white/70 transition-all duration-200 hover:border-white hover:text-white"
-                >
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                  <button
+                    type="submit"
+                    aria-label="Subscribe"
+                    disabled={status === "loading"}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center bg-transparent text-white/70 transition-all duration-200 hover:border-white hover:text-white disabled:opacity-60"
                   >
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </button>
-              </form>
+                    {status === "loading" ? (
+                      <motion.svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      >
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                      </motion.svg>
+                    ) : status === "success" ? (
+                      <span className="text-[18px] font-medium text-green-500">✓</span>
+                    ) : status === "error" ? (
+                      <span className="text-[20px] font-medium text-red-500">×</span>
+                    ) : (
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                      </svg>
+                    )}
+                  </button>
+                </form>
+              </motion.div>
+
+              {status === "success" && (
+                <motion.p
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-xs text-green-500 mt-2 font-satoshi"
+                >
+                  You&apos;re subscribed! Thank you.
+                </motion.p>
+              )}
             </div>
 
             {/* Social icons */}
@@ -132,6 +178,7 @@ export default function Footer() {
               ))}
             </nav>
           </div>
+          </FadeInUp>
         </div>
       </div>
     </footer>
@@ -153,7 +200,7 @@ function SocialIcon({
       target="_blank"
       rel="noreferrer noopener"
       aria-label={label}
-      className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-transparent text-white/70 
+      className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-transparent text-white/70
         transition-all duration-200 hover:border-white/70 hover:bg-white hover:text-[#151515]"
     >
       {children}

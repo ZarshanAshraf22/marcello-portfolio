@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { blurDataURL } from "@/lib/imageUtils";
+import FadeInUp from "./FadeInUp";
 
 export default function ContactSection() {
   return (
@@ -7,6 +9,7 @@ export default function ContactSection() {
       <div className="mx-auto max-w-7xl">
 
         {/* Dark card with rounded corners */}
+        <FadeInUp delay={0} duration={0.8} amount={0.1}>
         <div className="relative overflow-hidden rounded-[1.5rem] bg-[#141414] min-h-[100vh] sm:min-h-[420px] md:min-h-[520px]">
 
           {/* Person image — positioned on right side, fills card height */}
@@ -18,6 +21,8 @@ export default function ContactSection() {
               sizes="(max-width: 768px) 100vw, 52vw"
               className="object-cover object-[center_15%] hidden sm:block"
               priority
+              placeholder="blur"
+              blurDataURL={blurDataURL()}
             />
 
             <Image
@@ -27,6 +32,8 @@ export default function ContactSection() {
               sizes="100%"
               className="object-contain object-bottom block sm:hidden"
               priority
+              placeholder="blur"
+              blurDataURL={blurDataURL()}
             />
             {/* Left-side gradient fade so image blends into dark bg */}
             <div
@@ -58,8 +65,9 @@ export default function ContactSection() {
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center border border-[#CECBC8] bg-transparent px-5 py-2.5 font-geist 
-                  text-lg font-normal text-[#CECBC8] transition-all duration-200 hover:bg-[#CECBC8] hover:text-[#151515]"
+                className="inline-flex items-center justify-center border border-[#CECBC8] bg-transparent px-5 py-2.5 font-geist
+                  text-lg font-normal text-[#CECBC8] transition-all duration-200 hover:bg-[#CECBC8] hover:text-[#151515]
+                  active:scale-[0.97]"
               >
                 Book a Call
               </Link>
@@ -74,6 +82,7 @@ export default function ContactSection() {
           </div>
 
         </div>
+        </FadeInUp>
       </div>
     </section>
   );

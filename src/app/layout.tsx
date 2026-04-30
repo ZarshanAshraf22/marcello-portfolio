@@ -3,6 +3,8 @@ import "./globals.css";
 import { geist, satoshi } from "./fonts";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import PageLoader from "./components/PageLoader";
+import CustomCursor from "./components/CustomCursor";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://marcellogenovese.com";
@@ -67,7 +69,13 @@ export default function RootLayout({
       lang="en"
       className={`${geist.variable} ${satoshi.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      </head>
       <body className="min-h-full flex flex-col">
+        <PageLoader />
+        <CustomCursor />
         <Navbar />
         {children}
         <Footer />
