@@ -3,6 +3,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
 import Link from "next/link";
 import InsightCard from "./InsightCard";
+import FadeInUp from "./FadeInUp";
 import { insights as posts } from "@/data/insights";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -160,39 +161,43 @@ export default function InsightsSection() {
             <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 xl:px-14 2xl:px-0 mb-10 md:mb-14">
                 <div className="lg:grid md:grid-cols-[1fr_350px] gap-8 items-end mb-20">
                     {/* Left: big heading */}
-                    <ClipReveal delay={0}>
-                        <h2 className="font-geist text-[32px] sm:text-[40px] md:text-[44px] xl:text-[56px] font-normal leading-[1.1] tracking-tight">
-                            <span>(Insights from a Founder)</span>
-                            <span>
-                                {" "}Helping forward-thinking founders and companies break
-                                through complexity, unlock clarity, and accelerate measurable
-                                growth.
-                            </span>
-                        </h2>
-                    </ClipReveal>
+                    <FadeInUp delay={0}>
+                        <ClipReveal delay={0}>
+                            <h2 className="font-geist text-[32px] sm:text-[40px] md:text-[44px] xl:text-[56px] font-normal leading-[1.1] tracking-tight">
+                                <span>(Insights from a Founder)</span>
+                                <span>
+                                    {" "}Helping forward-thinking founders and companies break
+                                    through complexity, unlock clarity, and accelerate measurable
+                                    growth.
+                                </span>
+                            </h2>
+                        </ClipReveal>
+                    </FadeInUp>
 
                     {/* Right: button + subtext */}
-                    <div className="flex flex-col-reverse sm:w-1/2 lg:w-auto lg:flex-col items-start 
-                        lg:items-end gap-6 lg:mt-0 mt-6">
-                        <ClipReveal delay={0.1}>
-                            <Link
-                                href="/insights"
-                                className="font-satoshi text-base inline-block border border-[#2a2825]
-                                px-3 py-1.5 text-[#151515] rounded-[0.2rem] bg-transparent 
-                                hover:bg-[#2a2825] hover:text-[#cecbc8] transition-all duration-200 
-                                whitespace-nowrap"
-                            >
-                                View more Articles
-                            </Link>
-                        </ClipReveal>
-                        <ClipReveal delay={0.15}>
-                            <p className="font-geist text-[22px] leading-[1.65] opacity-60">
-                                Clear thinking, practical wisdom, and frameworks to help
-                                founders navigate complexity, build clarity, and scale with
-                                confidence.
-                            </p>
-                        </ClipReveal>
-                    </div>
+                    <FadeInUp delay={0.15}>
+                        <div className="flex flex-col-reverse sm:w-1/2 lg:w-auto lg:flex-col items-start
+                            lg:items-end gap-6 lg:mt-0 mt-6">
+                            <ClipReveal delay={0.1}>
+                                <Link
+                                    href="/insights"
+                                    className="font-satoshi text-base inline-block border border-[#2a2825]
+                                    px-3 py-1.5 text-[#151515] rounded-[0.2rem] bg-transparent
+                                    hover:bg-[#2a2825] hover:text-[#cecbc8] transition-all duration-200
+                                    whitespace-nowrap"
+                                >
+                                    View more Articles
+                                </Link>
+                            </ClipReveal>
+                            <ClipReveal delay={0.15}>
+                                <p className="font-geist text-[22px] leading-[1.65] opacity-60">
+                                    Clear thinking, practical wisdom, and frameworks to help
+                                    founders navigate complexity, build clarity, and scale with
+                                    confidence.
+                                </p>
+                            </ClipReveal>
+                        </div>
+                    </FadeInUp>
                 </div>
 
                 {/* ── Slider — inside the same max-w-7xl container ── */}

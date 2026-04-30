@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
+#about, #services, #insights, #contact, #method {
+  scroll-margin-top: 80px;
+}
+
+.navbar-links {
+  transition: opacity 0.5s ease 0.3s;
+}
+body.hero-typing .navbar-links {
+  opacity: 0;
+}
+
+@media (min-width: 768px) {
+  *,
+  a, button, [role="button"], input, label, select, textarea {
+    cursor: none !important;
+  }
+}
+
 @theme inline {
   --font-geist: var(--font-geist);
   --font-satoshi: var(--font-satoshi);

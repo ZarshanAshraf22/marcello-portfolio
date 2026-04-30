@@ -1,25 +1,72 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { blurDataURL } from "@/lib/imageUtils";
+
+const FULL_TEXT = "Marcello Genovese";
 
 export default function Hero() {
+  const [displayed, setDisplayed] = useState("");
+  const [typingDone, setTypingDone] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.add("hero-typing");
+    let i = 0;
+    const interval = setInterval(() => {
+      setDisplayed(FULL_TEXT.slice(0, i + 1));
+      i++;
+      if (i === FULL_TEXT.length) {
+        clearInterval(interval);
+        setTimeout(() => {
+          setTypingDone(true);
+          document.body.classList.remove("hero-typing");
+        }, 300);
+      }
+    }, 65);
+    return () => {
+      clearInterval(interval);
+      document.body.classList.remove("hero-typing");
+    };
+  }, []);
+
   return (
     <section className="heroBanner relative w-full bg-[#cecbc8]">
-     
+
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12 xl:px-14 2xl:px-0">
 
         {/* ── Title + Subtitle ── */}
         <div className="titleContent pt-14 pb-16 sm:pb-5 sm:pt-16 sm:pb-6 md:pt-20 md:pb-8">
           <h1 className="titleText font-geist font-medium tracking-tight text-neutral-950">
-            Marcello Genovese
+            {displayed}
+            {!typingDone && (
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 0.7, repeat: Infinity, ease: "linear" }}
+                className="inline-block w-[3px] h-[0.85em] bg-neutral-950 ml-1 align-middle"
+              />
+            )}
           </h1>
-          <p className="subTitleText font-geist mt-4 sm:mt-2">
+          <motion.p
+            className="subTitleText font-geist mt-4 sm:mt-2"
+            initial={{ opacity: 0 }}
+            animate={typingDone ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             Product Executive . Technology Strategist . Advisor
-          </p>
+          </motion.p>
         </div>
 
         {/* ── Hero Image ── */}
-        <div className="imageContent pb-12 sm:pb-14 md:pb-16 lg:pb-20">
-         
+        <motion.div
+          className="imageContent pb-12 sm:pb-14 md:pb-16 lg:pb-20"
+          initial={{ opacity: 0, y: 20 }}
+          animate={typingDone ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        >
+
           <div className="relative w-full overflow-hidden rounded-[14px] shadow-2xl shadow-neutral-900/10">
 
             {/* Aspect ratio sizer */}
@@ -33,6 +80,8 @@ export default function Hero() {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1280px"
               className="object-cover object-top hidden sm:block"
               priority
+              placeholder="blur"
+              blurDataURL={blurDataURL()}
             />
 
             {/* Mobile Image */}
@@ -43,6 +92,8 @@ export default function Hero() {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1280px"
               className="object-cover object-center block sm:hidden"
               priority
+              placeholder="blur"
+              blurDataURL={blurDataURL()}
             />
 
             {/*
@@ -85,6 +136,7 @@ export default function Hero() {
                     font-geist text-[18px] font-light tracking-tight text-neutral-200
                     transition-all duration-300
                     hover:border-white hover:bg-white hover:text-neutral-900
+                    active:scale-[0.97]
                     sm:px-5 sm:py-3 md:text-base"
                 >
                   Book a Discovery Call
@@ -110,7 +162,7 @@ export default function Hero() {
             </div>
 
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

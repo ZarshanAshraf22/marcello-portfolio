@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getInsightBySlug, insights } from "@/data/insights";
+import { blurDataURL } from "@/lib/imageUtils";
 
 type Params = { slug: string };
 
@@ -73,6 +74,8 @@ export default async function InsightDetail({
             sizes="(max-width: 900px) 100vw, 900px"
             className="object-contain invert"
             priority
+            placeholder="blur"
+            blurDataURL={blurDataURL()}
           />
         </div>
        
@@ -85,7 +88,7 @@ export default async function InsightDetail({
             return (
               <div
                 key={i}
-                className="grid grid-cols-[60px_1fr] md:grid-cols-[120px_1fr] gap-4 md:gap-6"
+                className="grid sm:grid-cols-[60px_1fr] md:grid-cols-[120px_1fr] gap-4 md:gap-6"
               >
                 {/* Arrow column */}
                 <div

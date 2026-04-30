@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import FadeInUp from "./FadeInUp";
 
 const images = [
   "/media/slide-1.png",
@@ -17,44 +18,48 @@ export default function PicturesSection() {
     <section className="mx-auto max-w-7xl pt-20 pb-0 px-5 sm:px-8 lg:px-12 xl:px-14 2xl:px-0">
       {/* HEADING */}
       <div className="mb-12">
-        <div className="overflow-hidden">
-          <h2
-            className="font-geist text-[32px] sm:text-[40px] md:text-[44px] xl:text-[56px] max-w-xl font-normal leading-[1.1] tracking-tight"
-            style={{
-              transform: "translateY(100%)",
-              animation: "clipReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-              animationDelay: "0s",
-            }}
-          >
-            (Pictures)
-          </h2>
-        </div>
+        <FadeInUp delay={0}>
+          <div className="overflow-hidden">
+            <h2
+              className="font-geist text-[32px] sm:text-[40px] md:text-[44px] xl:text-[56px] max-w-xl font-normal leading-[1.1] tracking-tight"
+              style={{
+                transform: "translateY(100%)",
+                animation: "clipReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+                animationDelay: "0s",
+              }}
+            >
+              (Pictures)
+            </h2>
+          </div>
 
-        <div className="overflow-hidden">
-          <h2
-            className="font-geist text-[32px] sm:text-[40px] md:text-[44px] xl:text-[56px] max-w-xl font-normal leading-[1.1] tracking-tight"
-            style={{
-              transform: "translateY(100%)",
-              animation: "clipReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-              animationDelay: "0.08s",
-            }}
-          >
-            Behind the Strategy
-          </h2>
-        </div>
+          <div className="overflow-hidden">
+            <h2
+              className="font-geist text-[32px] sm:text-[40px] md:text-[44px] xl:text-[56px] max-w-xl font-normal leading-[1.1] tracking-tight"
+              style={{
+                transform: "translateY(100%)",
+                animation: "clipReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+                animationDelay: "0.08s",
+              }}
+            >
+              Behind the Strategy
+            </h2>
+          </div>
+        </FadeInUp>
 
-        <div className="overflow-hidden mt-3">
-          <p
-            className="font-geist text-[16px] md:text-[18px] leading-[1.65] "
-            style={{
-              transform: "translateY(100%)",
-              animation: "clipReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-              animationDelay: "0.16s",
-            }}
-          >
-            Where complexity becomes clarity.
-          </p>
-        </div>
+        <FadeInUp delay={0.1}>
+          <div className="overflow-hidden mt-3">
+            <p
+              className="font-geist text-[16px] md:text-[18px] leading-[1.65] "
+              style={{
+                transform: "translateY(100%)",
+                animation: "clipReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+                animationDelay: "0.16s",
+              }}
+            >
+              Where complexity becomes clarity.
+            </p>
+          </div>
+        </FadeInUp>
       </div>
 
       {/* SLIDER */}

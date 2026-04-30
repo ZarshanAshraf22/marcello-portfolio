@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import FadeInUp from "./FadeInUp";
 
 const steps = [
   {
@@ -51,27 +52,29 @@ export default function MethodSection() {
         {/* Content Column */}
         <div className="flex flex-col ">
           {/* Header */}
-          <div className="mb-8 md:mb-12">
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.05 }}
-              className="font-geist text-[16px] md:text-[18px] font-normal mb-6 text-[#CECBC8]"
-            >
-              (Method)
-            </motion.p>
+          <FadeInUp delay={0}>
+            <div className="mb-8 md:mb-12">
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.05 }}
+                className="font-geist text-[16px] md:text-[18px] font-normal mb-6 text-[#CECBC8]"
+              >
+                (Method)
+              </motion.p>
 
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-geist text-[32px] sm:text-[40px] md:text-[44px] xl:text-[56px] mb-6 md:mb-10 font-normal leading-[1.1] tracking-tight text-[#CECBC8]"
-            >
-              How Marcello <br className="hidden xl:block" /> Genovese Works
-            </motion.h2>
-          </div>
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="font-geist text-[32px] sm:text-[40px] md:text-[44px] xl:text-[56px] mb-6 md:mb-10 font-normal leading-[1.1] tracking-tight text-[#CECBC8]"
+              >
+                How Marcello <br className="hidden xl:block" /> Genovese Works
+              </motion.h2>
+            </div>
+          </FadeInUp>
 
           {/* Cards */}
           <div className="relative w-full flex flex-col gap-0 sm:gap-5 md:gap-0 md:h-[640px] xl:h-[75vh] md:block ">
